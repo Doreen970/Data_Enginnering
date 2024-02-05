@@ -1,0 +1,1 @@
+in this project, I got introduced to workflow orchestration using Mage-ai. I learnt how to create pipelines, configure postgresql for data storage, loading data from an api then transforming the data by cleaning it. I then exported the data to already configured postgresql database.

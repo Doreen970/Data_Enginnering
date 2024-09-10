@@ -59,6 +59,8 @@ FROM music_data_schema.music;
 UPDATE music_data_schema.music
 SET VALUE = REPLACE(VALUE, ',', '');
 
+DROP USER Esther;
+
 UPDATE music_data_schema.music
 SET VALUE = 1
 WHERE VALUE = 0.8;

@@ -1,0 +1,1 @@
+This folder contains my work using python library dlt to make efficient pipelines fast and also data loading. I have used dlt for data loading, data streaming, normalisation and use of duckDB database

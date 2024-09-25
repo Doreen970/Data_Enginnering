@@ -1,3 +1,5 @@
+
+-- SQL queries for data modeling
 USE DATABASE SNOW_SALE;
 
 select * FROM sales_table
@@ -17,7 +19,7 @@ FROM sales_table;
 SELECT * FROM dim_customer
 LIMIT 5;
 
-
+-- orders dimension table
 CREATE OR REPLACE TABLE dim_orders (
     ORDERID INT,
     QUANTITY INT,
@@ -31,6 +33,7 @@ FROM sales_table;
 SELECT * FROM dim_orders
 LIMIT 3;
 
+-- products dimension table
 CREATE OR REPLACE TABLE dim_products (
     PRODUCTID INT,
     PRODUCTNAME VARCHAR,
@@ -44,6 +47,8 @@ FROM sales_table;
 SELECT * FROM dim_products
 LIMIT 3;
 
+
+-- date dimension table
 CREATE OR REPLACE TABLE dim_date (
     DATEID INT AUTOINCREMENT,
     date DATE,
@@ -95,3 +100,52 @@ LEFT JOIN dim_date d ON s.ORDERDATE = d.date;
 
 SELECT * FROM sales_fact
 LIMIT 3;
+
+-- data validation checks / cleaning
+-- check for nulls
+SELECT * 
+FROM sales_fact
+LEFT JOIN dim_customer ON sales_fact.CUSTOMERID = dim_customer.CUSTOMERID
+LEFT JOIN dim_orders ON sales_fact.ORDERID = dim_orders.ORDERID
+LEFT JOIN dim_products ON sales_fact.PRODUCTID = dim_products.PRODUCTID
+LEFT JOIN dim_date ON sales_fact.DATEID = dim_date.DATEID
+WHERE dim_customer.CUSTOMERID IS NULL
+   OR dim_orders.ORDERID IS NULL
+   OR dim_products.PRODUCTID IS NULL
+   OR dim_date.DATEID IS NULL
+   OR sales_fact.priceperunit IS NULL
+   OR sales_fact.totalprice IS NULL;
+
+-- checking column datatypes
+SELECT 
+    table_name,
+    column_name,
+    data_type
+FROM 
+    INFORMATION_SCHEMA.COLUMNS
+WHERE 
+    table_name IN ('SALES_FACT', 'DIM_CUSTOMER', 'DIM_ORDERS', 'DIM_PRODUCTS', 'DIM_DATE')
+ORDER BY 
+    table_name, column_name;
+
+-- check for duplicates
+SELECT 
+    CUSTOMERID, ORDERID, PRODUCTID, DATEID, PRICEPERUNIT, TOTALPRICE,
+    COUNT(*) AS count_duplicates
+FROM 
+    sales_fact
+GROUP BY 
+    CUSTOMERID, ORDERID, PRODUCTID, DATEID, PRICEPERUNIT, TOTALPRICE
+HAVING 
+    COUNT(*) > 1;
+
+-- validating date table
+SELECT DAY, MONTH, YEAR
+FROM dim_date
+WHERE (DAY > 31
+OR MONTH > 12
+OR YEAR > 2024);   
+
+-- validating orders table
+SELECT * FROM dim_orders
+WHERE QUANTITY < 1;

@@ -24,8 +24,8 @@ CREATE OR REPLACE TABLE sales_report (
 
 -- The task
 CREATE OR REPLACE TASK hourly_sales
-  WAREHOUSE = 'sales_warehouse' --Specify your warehouse
-  SCHEDULE = '60 MINUTE' -- Specify the frequency of task to run
+  WAREHOUSE = 'sales_warehouse' 
+  SCHEDULE = '60 MINUTE' 
   COMMENT = 'sales report in realtime'
 AS
   -- SQL script for real-time analysis

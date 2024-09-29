@@ -149,3 +149,6 @@ OR YEAR > 2024);
 -- validating orders table
 SELECT * FROM dim_orders
 WHERE QUANTITY < 1;
+
+-- get rid of dim_orders and make it in fact table
+DROP TABLE dim_orders;
